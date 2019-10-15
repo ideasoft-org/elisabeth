@@ -1,41 +1,35 @@
-package org.test.Plugin;
-
-import org.test.Main;
+package org.elisabeth.Plugin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
-public class TcpPlugin extends Plugin {
+public class LoopPlugin extends Plugin {
 
     @Override
     public Object evaluate() {
-        String port = null;
-        Boolean loop = false;
         List<Function<Object, String>> tasks = new ArrayList<>();
 
-        Map<String, Object> settingsMap = (Map<String, Object>) getYamlData().get("$tcp");
+        List<Map<String, Object>> settingsMap = (List<Map<String, Object>>) getYamlData().get("$loop");
 
-        for (Map.Entry<String, Object> entry : settingsMap.entrySet()) {
-            if (entry.getKey().equals("port")) {
-                port = entry.getValue().toString();
-            }
+        tasks = _parse_Tcp_On_Connect(settingsMap);
 
-            if (entry.getKey().equals("loop")) {
-                loop = Boolean.parseBoolean(entry.getValue().toString());
-            }
+        while (true) {
+            tasks.forEach( (obj) -> obj.apply(null));
 
-            if (entry.getKey().equals("on_connect")) {
-                tasks = _parse_Tcp_On_Connect((List<Map<String, Object>>) entry.getValue());
+            try {
+                //Thread.sleep(10L);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
             }
         }
-        EchoServer server = new EchoServer(Integer.parseInt(port), loop);
-        server.serve(tasks);
-        return null;
     }
 
     private List<Function<Object, String>> _parse_Tcp_On_Connect(List<Map<String, Object>> commands) {

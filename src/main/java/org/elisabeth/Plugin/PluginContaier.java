@@ -1,4 +1,4 @@
-package org.test.Plugin;
+package org.elisabeth.Plugin;
 
 import java.util.*;
 

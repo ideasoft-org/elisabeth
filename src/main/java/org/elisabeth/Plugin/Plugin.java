@@ -1,6 +1,4 @@
-package org.test.Plugin;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+package org.elisabeth.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -1,10 +1,13 @@
-package org.test.Plugin;
+package org.elisabeth.Plugin;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Random;
 
 public class BashPlugin extends Plugin {
 
@@ -34,33 +37,47 @@ public class BashPlugin extends Plugin {
     }
 
     private static String _evalBash(String command) {
+
+        Random random = new Random();
+        String filename = "temp_sh_" + random.nextFloat() + ".sh";
+
+        Path shPath = Paths.get(filename);
+        try{
+            Files.write(shPath, "#!/bin/sh\n".getBytes());
+            Files.write(shPath, command.getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+
+        }
+
         Process process = null;
         try {
-            process = Runtime.getRuntime().exec(command, null);
+            process = Runtime.getRuntime().exec("/bin/sh " + filename, null);
         } catch (Exception e){
+            e.printStackTrace();
             return null;
         }
 
-        String result = "";
+        StringBuilder result = new StringBuilder();
         try {
             BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = in.readLine()) != null) {
-                result += line;
-                //System.out.println(line);
+                result.append(line).append("\n");
             }
-
-            // Null was received, so loop was aborted.
-
         } catch (IOException e) {
             System.out.println(e.getLocalizedMessage());
-
+            return null;
         }
-//
-//        try (Scanner scanner = new Scanner(process.getInputStream(), "UTF-8")) {
-//            return scanner.next();
-//        }\
-        return result;
+
+        try {
+            Files.deleteIfExists(shPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result.toString();
     }
 
 }

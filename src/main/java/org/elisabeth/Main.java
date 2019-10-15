@@ -1,21 +1,15 @@
-package org.test;
+package org.elisabeth;
 
-import org.apache.tomcat.util.buf.StringUtils;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.test.Plugin.*;
+import org.elisabeth.Plugin.*;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.Function;
 import java.io.*;
-import java.net.*;
+
 @SpringBootApplication
 public class Main {
 

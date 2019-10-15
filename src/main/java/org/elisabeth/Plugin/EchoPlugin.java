@@ -1,4 +1,4 @@
-package org.test.Plugin;
+package org.elisabeth.Plugin;
 
 
 public class EchoPlugin extends Plugin {

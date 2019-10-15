@@ -1,0 +1,40 @@
+thread_1:
+  - $bash:
+        exec: cat /home/maksim/.psql_history
+        store: global_result_1
+  - $bash: ls -l
+  - $tcp:
+      port: 8080
+      loop: true
+      on_connect:
+          - $echo: '**************************************** SERV 1 START *********************************************'
+          - $bash: pwd
+          - $echo: $global_result_1
+          - $echo: global_result_1
+          - $echo: '**************************************** SERV 1 END *********************************************'
+          - $tcp:
+              port: 8085
+              loop: true
+              on_connect:
+                - $echo: '**************************************** SERV 1 START *********************************************'
+                - $bash: pwd
+                - $echo: $global_result_1
+                - $echo: global_result_1
+                - $echo: '**************************************** SERV 1 END *********************************************'
+thread_2:
+  - $tcp:
+      port: 8081
+      loop: true
+      on_connect:
+          - $bash:
+              exec: pwd
+              store: global_result_1
+          - $echo: $global_result_1
+          - $echo: '**************************************** SERV 2*********************************************'
+
+thread_3:
+  - $loop:
+      - $echo: '**************************************** SERV 3 START *********************************************'
+      - $bash: echo "Fuck off" >> /home/maksim/test/milana-sql/target/temp1.out
+ #     - $bash: curl -X GET http://localhost:8080/data
+      - $echo: '**************************************** SERV 3 END *********************************************'
